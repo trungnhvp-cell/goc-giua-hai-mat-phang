@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ôn tập: Góc giữa hai mặt phẳng — Thầy Nguyễn Hữu Trung</title>
+
+<style>
+  :root{
+    --bg:#f1f5f9; --card:#ffffff; --ink:#0f172a; --muted:#64748b;
+    --pri:#2563eb; --pri-soft:#dbeafe;
+    --ok:#16a34a; --ok-soft:#dcfce7;
+    --err:#dc2626; --err-soft:#fee2e2;
+    --warn:#d97706; --warn-soft:#fef3c7;
+    --violet:#7c3aed;
+    --line:#e2e8f0;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth; scroll-padding-top:80px;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    line-height:1.65;
+  }
+  header{
+    background:linear-gradient(135deg,#1e3a8a,#2563eb 55%,#0ea5e9);
+    color:#fff; padding:34px 18px 30px; text-align:center;
+  }
+  header h1{margin:0 0 8px; font-size:clamp(22px,3.4vw,34px); letter-spacing:.3px;}
+  header p{margin:0; opacity:.92; font-size:15px;}
+  header .chips{margin-top:14px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap;}
+  header .chips span{
+    background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.35);
+    padding:5px 12px; border-radius:999px; font-size:13px;
+  }
+  header .chips .author{
+    background:rgba(255,255,255,.28); border-color:#fff;
+    font-weight:700;
+  }
+  nav{
+    position:sticky; top:0; z-index:50; background:rgba(255,255,255,.94);
+    backdrop-filter:blur(10px); border-bottom:1px solid var(--line);
+    display:flex; gap:4px; justify-content:center; padding:8px 10px; flex-wrap:wrap;
+  }
+  nav a{
+    text-decoration:none; color:var(--muted); font-weight:600; font-size:14px;
+    padding:8px 16px; border-radius:10px; transition:.18s;
+  }
+  nav a:hover,nav a.active{background:var(--pri-soft); color:var(--pri);}
+  main{max-width:1080px; margin:0 auto; padding:26px 16px 90px;}
+  section{margin-bottom:46px;}
+  h2.sec{font-size:22px; margin:0 0 6px; display:flex; align-items:center; gap:10px;}
+  h2.sec .num{
+    width:34px;height:34px;border-radius:10px;background:var(--pri);color:#fff;
+    display:grid;place-items:center;font-size:16px;flex:none;
+  }
+  .sec-desc{color:var(--muted); font-size:14px; margin:0 0 18px;}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:20px 22px; margin-bottom:16px; box-shadow:0 1px 2px rgba(15,23,42,.04);
+    transition:box-shadow .25s, border-color .25s, transform .25s;
+  }
+  .card.flash{
+    border-color:var(--violet); box-shadow:0 0 0 4px rgba(124,58,237,.18);
+    animation:pulse 1.2s ease;
+  }
+  @keyframes pulse{0%{transform:scale(1)}45%{transform:scale(1.012)}100%{transform:scale(1)}}
+  .card h3{
+    margin:0 0 10px; font-size:17px; color:#1e3a8a;
+    display:flex; align-items:center; gap:9px;
+  }
+  .card h3 .tag{
+    background:var(--pri-soft); color:var(--pri); font-size:12px; font-weight:700;
+    padding:2px 9px; border-radius:6px; letter-spacing:.4px;
+  }
+  .card h4{margin:14px 0 6px; font-size:15.5px; color:#1e3a8a;}
+  .card p{margin:8px 0;}
+  .card ul,.card ol{margin:8px 0; padding-left:22px;}
+  .card li{margin:5px 0;}
+  .card b.vec{color:#1d4ed8;}
+  .hl{background:#fef9c3; padding:1px 6px; border-radius:5px; font-weight:600;}
+  .formula{
+    background:#0f172a; color:#e2e8f0; border-radius:12px; padding:14px 18px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:15px; overflow-x:auto; margin:12px 0; line-height:1.7;
+  }
+  .formula b{color:#7dd3fc;}
+  .formula .op{color:#fbbf24;}
+  .note{
+    border-left:4px solid var(--warn); background:var(--warn-soft);
+    padding:10px 14px; border-radius:0 10px 10px 0; font-size:14.5px; margin:12px 0;
+  }
+  .note.blue{border-color:var(--pri); background:var(--pri-soft);}
+  .note.green{border-color:var(--ok); background:var(--ok-soft);}
+  .note.violet{border-color:var(--violet); background:#ede9fe;}
+  .steps{counter-reset:s; list-style:none; padding-left:0;}
+  .steps li{position:relative; padding-left:44px; margin:12px 0;}
+  .steps li::before{
+    counter-increment:s; content:counter(s);
+    position:absolute; left:0; top:1px;
+    width:30px;height:30px;border-radius:50%;
+    background:linear-gradient(135deg,#2563eb,#0ea5e9); color:#fff;
+    display:grid;place-items:center; font-weight:700; font-size:14px;
+  }
+  .figwrap{
+    display:flex; gap:18px; flex-wrap:wrap; align-items:center;
+    background:#f8fafc; border:1px dashed #cbd5e1; border-radius:14px;
+    padding:14px; margin:14px 0;
+  }
+  svg.fig{max-width:100%; height:auto; flex:1 1 300px;}
+  .figcap{flex:1 1 220px; font-size:14px; color:var(--muted);}
+  /* Casio block */
+  .casio{
+    background:#0b1220; color:#e2e8f0; border-radius:14px; padding:14px 18px;
+    margin:12px 0; font-size:14px; line-height:1.75;
+  }
+  .casio h5{margin:0 0 8px; color:#7dd3fc; font-size:14.5px;}
+  .casio kbd{
+    display:inline-block; background:#1e293b; color:#fbbf24;
+    padding:1px 7px; border-radius:5px; font-family:ui-monospace,monospace;
+    font-size:13px; border:1px solid #334155; margin:0 1px;
+  }
+  .casio ol{margin:6px 0; padding-left:20px;}
+  .casio li{margin:3px 0;}
+  /* Practice */
+  .set{
+    background:#fff; border:1px solid var(--line); border-radius:18px;
+    padding:20px 22px; margin-bottom:22px;
+  }
+  .set > h3{
+    margin:0 0 4px; font-size:19px; color:#1e3a8a;
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  }
+  .badge{font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px;background:var(--pri-soft); color:var(--pri);}
+  .badge.g{background:var(--ok-soft); color:var(--ok);}
+  .badge.o{background:var(--warn-soft); color:var(--warn);}
+  .set .sub{color:var(--muted); font-size:14px; margin:0 0 16px;}
+  .qcard{border:1px solid var(--line); border-radius:14px; padding:15px 17px;margin-bottom:14px; background:#fdfdff; transition:.2s;}
+  .qhead{display:flex; gap:10px; margin-bottom:10px; align-items:flex-start;}
+  .qnum{flex:none; background:#1e3a8a; color:#fff; font-size:12.5px; font-weight:700;padding:3px 10px; border-radius:7px; white-space:nowrap; margin-top:2px;}
+  .qtext{font-weight:600; font-size:15.5px;}
+  .opts{display:grid; gap:8px;}
+  @media(min-width:640px){ .opts{grid-template-columns:1fr 1fr;} }
+  .opt{
+    display:flex; gap:10px; align-items:flex-start; text-align:left;
+    background:#fff; border:1.6px solid var(--line); border-radius:11px;
+    padding:9px 12px; font:inherit; font-size:14.5px; cursor:pointer;
+    transition:.16s; color:var(--ink); width:100%;
+  }
+  .opt:hover:not(:disabled){border-color:var(--pri); background:#f0f7ff;}
+  .opt:disabled{cursor:default;}
+  .opt .lab{flex:none; width:23px;height:23px; border-radius:6px; background:#eef2f7;display:grid;place-items:center; font-weight:700; font-size:13px; color:#475569;}
+  .opt.correct{border-color:var(--ok); background:var(--ok-soft);}
+  .opt.correct .lab{background:var(--ok); color:#fff;}
+  .opt.wrong{border-color:var(--err); background:var(--err-soft);}
+  .opt.wrong .lab{background:var(--err); color:#fff;}
+  .fb{margin-top:12px; border-radius:11px; padding:11px 14px; font-size:14.5px;}
+  .fb-ok{background:var(--ok-soft); border:1px solid #86efac;}
+  .fb-err{background:var(--err-soft); border:1px solid #fca5a5;}
+  .fb .sol{margin-top:7px; color:#334155; font-size:14px; line-height:1.6;}
+  .review-btn{
+    display:inline-block; margin-top:10px; text-decoration:none;
+    background:var(--violet); color:#fff; font-weight:600; font-size:13.5px;
+    padding:7px 14px; border-radius:9px; transition:.18s;
+  }
+  .review-btn:hover{background:#6d28d9; transform:translateY(-1px);}
+  .exam{background:#fff; border:1px solid var(--line); border-radius:18px;padding:20px 22px; margin-bottom:22px;}
+  .exam-head{display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; align-items:center;}
+  .exam-head h3{margin:0; font-size:19px; color:#1e3a8a;}
+  .exam-head .meta{color:var(--muted); font-size:13.5px;}
+  .timer{
+    font-family:ui-monospace,Menlo,Consolas,monospace; font-size:20px; font-weight:700;
+    background:#0f172a; color:#4ade80; padding:6px 16px; border-radius:11px;
+    letter-spacing:1px; min-width:104px; text-align:center;
+  }
+  .timer.danger{background:var(--err); color:#fff; animation:blink 1s infinite;}
+  @keyframes blink{50%{opacity:.55}}
+  .btn{border:none; cursor:pointer; font:inherit; font-weight:700; font-size:14.5px;padding:10px 22px; border-radius:11px; transition:.18s;}
+  .btn-pri{background:var(--pri); color:#fff;}
+  .btn-pri:hover{background:#1d4ed8; transform:translateY(-1px);}
+  .btn-ok{background:var(--ok); color:#fff;}
+  .btn-ok:hover{background:#15803d;}
+  .btn-ghost{background:#eef2f7; color:#334155;}
+  .btn-ghost:hover{background:#e2e8f0;}
+  .exam-body{display:none; margin-top:18px;}
+  .exam-body.on{display:block;}
+  .eq{border:1px solid var(--line); border-radius:13px; padding:14px 16px;margin-bottom:12px; background:#fdfdff;}
+  .eq .qtext{font-weight:600; margin-bottom:9px; font-size:15px;}
+  .eq .opt{padding:8px 11px; font-size:14px;}
+  .eq .opt.sel{border-color:var(--pri); background:#e0efff;}
+  .eq .opt.miss{border-color:var(--err); background:var(--err-soft);}
+  .eq .opt.hit{border-color:var(--ok); background:var(--ok-soft);}
+  .eq .sol{margin-top:9px; font-size:13.8px; color:#334155; background:#f1f5f9;padding:9px 12px; border-radius:9px;}
+  .result{margin-top:18px; border-radius:14px; padding:18px 20px;background:linear-gradient(135deg,#eff6ff,#e0f2fe); border:1px solid #bfdbfe;}
+  .result .score{font-size:30px; font-weight:800; color:var(--pri);}
+  .result .msg{margin-top:4px; color:#334155;}
+  .exam-actions{margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;}
+  footer{
+    text-align:center; color:var(--muted); font-size:13.5px; padding:26px 16px 40px;
+    border-top:1px solid var(--line); margin-top:20px; background:#fff;
+  }
+  footer .author{
+    display:inline-block; margin-top:8px; padding:8px 16px;
+    background:linear-gradient(135deg,#1e3a8a,#0ea5e9); color:#fff;
+    border-radius:10px; font-weight:700; font-size:14px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Góc giữa hai mặt phẳng</h1>
+  <p>Lý thuyết trọng tâm · Hình vẽ chuẩn nét đứt / nét liền · Bài tập có lời giải · Đề luyện có bấm giờ</p>
+  <div class="chips">
+    <span>Toán 11 – Hình học không gian</span>
+    <span>6 thẻ kiến thức</span>
+    <span>18 câu có lời giải</span>
+    <span>3 đề × 22 câu</span>
+    <span>Hoạt động offline</span>
+    <span class="author">👨‍🏫 Thầy Nguyễn Hữu Trung – THPT Trần Phú</span>
+  </div>
+</header>
+
+<nav>
+  <a href="#theory" class="active">📘 Kiến thức cơ bản</a>
+  <a href="#practice">✏️ Luyện tập có lời giải</a>
+  <a href="#exam">⏱️ Đề thi có bấm giờ</a>
+</nav>
+
+<main>
+
+<!-- ========================= PHẦN 1: LÝ THUYẾT ========================= -->
+<section id="theory">
+  <h2 class="sec"><span class="num">1</span> Kiến thức cơ bản</h2>
+  <p class="sec-desc">Sáu thẻ kiến thức dưới đây là “bộ khung” để giải mọi bài toán xác định góc giữa hai mặt phẳng.</p>
+
+  <!-- K1 -->
+  <div class="card" id="k1">
+    <h3><span class="tag">K1</span> Định nghĩa và tính chất</h3>
+    <p><b>Định nghĩa.</b> Góc giữa hai mặt phẳng (P) và (Q) là góc giữa hai đường thẳng lần lượt vuông góc với (P) và (Q). Kí hiệu ((P), (Q)) hoặc α.</p>
+    <div class="formula">
+      Nếu <b>a ⊥ (P)</b> và <b>b ⊥ (Q)</b> thì &nbsp; ((P),(Q)) = góc(a, b) &nbsp; <span class="op">(lấy góc nhọn hoặc vuông)</span>
+    </div>
+    <ul>
+      <li>(P) ∥ (Q) hoặc (P) ≡ (Q) ⟹ góc giữa chúng bằng <span class="hl">0°</span>.</li>
+      <li>(P) ⊥ (Q) ⟹ góc giữa chúng bằng <span class="hl">90°</span>.</li>
+      <li>Luôn có 0° ≤ α ≤ 90°. <b>Góc giữa hai mặt phẳng không bao giờ là góc tù.</b></li>
+    </ul>
+  </div>
+
+  <!-- K2 -->
+  <div class="card" id="k2">
+    <h3><span class="tag">K2</span> Quy trình 4 bước xác định góc giữa hai mặt phẳng</h3>
+    <div class="figwrap">
+      <svg class="fig" viewBox="0 0 440 400" xmlns="http://www.w3.org/2000/svg">
+        <!-- Mặt phẳng (R) - nét liền -->
+        <polygon points="80,120 350,120 310,270 40,270" fill="#ede9fe" fill-opacity="0.6" stroke="#7c3aed" stroke-width="2"/>
+        <text x="92" y="148" font-size="16" fill="#7c3aed" font-weight="bold">(R)</text>
+
+        <!-- Phần d phía sau mặt phẳng (R) - nét đứt -->
+        <line x1="195" y1="60" x2="195" y2="195" stroke="#0f172a" stroke-width="2.5" stroke-dasharray="8 6"/>
+        <!-- Phần d phía trước (về người xem) - nét liền -->
+        <line x1="195" y1="195" x2="195" y2="340" stroke="#0f172a" stroke-width="2.5"/>
+        <text x="205" y="58" font-size="15" fill="#0f172a" font-weight="bold">d</text>
+
+        <!-- Dấu vuông góc tại O: d ⊥ (R) -->
+        <path d="M 183 195 L 183 207 L 195 207" fill="none" stroke="#16a34a" stroke-width="1.8"/>
+
+        <!-- Đường a trong (R) - nét liền -->
+        <line x1="100" y1="235" x2="290" y2="155" stroke="#1d4ed8" stroke-width="2.5"/>
+        <text x="298" y="150" font-size="15" fill="#1d4ed8" font-weight="bold">a</text>
+
+        <!-- Đường b trong (R) - nét liền -->
+        <line x1="120" y1="165" x2="270" y2="225" stroke="#b45309" stroke-width="2.5"/>
+        <text x="278" y="232" font-size="15" fill="#b45309" font-weight="bold">b</text>
+
+        <!-- Cung góc α -->
+        <path d="M 232.1 209.9 A 40 40 0 0 0 231.9 179.5" fill="none" stroke="#dc2626" stroke-width="2"/>
+        <text x="250" y="200" font-size="15" fill="#dc2626" font-weight="bold">α</text>
+
+        <!-- Điểm O -->
+        <circle cx="195" cy="195" r="4.5" fill="#0f172a"/>
+        <text x="168" y="192" font-size="15" font-weight="bold">O</text>
+      </svg>
+      <div class="figcap">
+        <b>Nét liền:</b> phần thấy được của hình (mặt phẳng (R), các đường a, b, phần d phía trước).<br>
+        <b>Nét đứt:</b> phần khuất (phần d phía sau mặt phẳng (R)).<br>
+        Mặt phẳng (R) ⊥ d cắt (P) theo a và cắt (Q) theo b. Khi đó a ⊥ d, b ⊥ d và góc giữa (P), (Q) chính là góc α = ∠(a, b).
+      </div>
+    </div>
+    <ol class="steps">
+      <li><b>Tìm giao tuyến</b> d = (P) ∩ (Q). <i>(Nếu hai mặt phẳng song song/trùng nhau thì góc bằng 0°.)</i></li>
+      <li><b>Dựng mặt phẳng</b> (R) ⊥ d tại O (hoặc chọn một điểm O ∈ d rồi dựng đường vuông góc).</li>
+      <li><b>Xác định góc phẳng nhị diện:</b> Trong (P) kẻ a ⊥ d tại O, trong (Q) kẻ b ⊥ d tại O. Góc cần tìm là ∠(a, b) — <b>lấy góc nhọn hoặc vuông</b>.</li>
+      <li><b>Tính toán:</b> Dùng hệ thức lượng trong tam giác (sin, cos, tan) để tính số đo góc.</li>
+    </ol>
+    <div class="note blue">
+      <b>Mẹo trình bày:</b> Câu then chốt luôn là: <i>“Ta có a ⊥ d và b ⊥ d, suy ra góc giữa hai mặt phẳng là góc ∠AOB.”</i>
+    </div>
+  </div>
+
+  <!-- K3 -->
+  <div class="card" id="k3">
+    <h3><span class="tag">K3</span> Định lí ba đường vuông góc – Hình chóp có cạnh bên vuông góc với đáy</h3>
+    <div class="figwrap">
+      <svg class="fig" viewBox="0 0 400 380" xmlns="http://www.w3.org/2000/svg">
+        <!-- Đáy ABC: các cạnh thấy đều nét liền -->
+        <line x1="100" y1="290" x2="200" y2="140" stroke="#1e293b" stroke-width="2.4"/>
+        <line x1="200" y1="140" x2="280" y2="280" stroke="#1e293b" stroke-width="2.4"/>
+        <line x1="280" y1="280" x2="100" y2="290" stroke="#1e293b" stroke-width="2.4"/>
+        <!-- Các cạnh bên: nét liền -->
+        <line x1="100" y1="90"  x2="100" y2="290" stroke="#1e293b" stroke-width="2.4"/>
+        <line x1="100" y1="90"  x2="200" y2="140" stroke="#1e293b" stroke-width="2.4"/>
+        <line x1="100" y1="90"  x2="280" y2="280" stroke="#1e293b" stroke-width="2.4"/>
+
+        <!-- AH (đường phụ) - nét đứt xanh lá -->
+        <line x1="100" y1="290" x2="240" y2="210" stroke="#16a34a" stroke-width="2.6" stroke-dasharray="7 5"/>
+        <!-- SH (đường phụ) - nét đứt đỏ -->
+        <line x1="100" y1="90"  x2="240" y2="210" stroke="#dc2626" stroke-width="2.6" stroke-dasharray="7 5"/>
+
+        <!-- Cung góc φ = ∠SHA -->
+        <path d="M 177.3 262.6 A 30 30 0 0 0 157.8 246" fill="none" stroke="#7c3aed" stroke-width="2.2"/>
+        <text x="168" y="260" font-size="15" fill="#7c3aed" font-weight="bold">φ</text>
+
+        <!-- Điểm -->
+        <circle cx="100" cy="90"  r="4.5" fill="#0f172a"/><text x="78"  y="85"  font-size="15" font-weight="bold">S</text>
+        <circle cx="100" cy="290" r="4.5" fill="#0f172a"/><text x="80"  y="312" font-size="15" font-weight="bold">A</text>
+        <circle cx="200" cy="140" r="4.5" fill="#0f172a"/><text x="208" y="132" font-size="15" font-weight="bold">B</text>
+        <circle cx="280" cy="280" r="4.5" fill="#0f172a"/><text x="288" y="288" font-size="15" font-weight="bold">C</text>
+        <circle cx="240" cy="210" r="4.5" fill="#16a34a"/><text x="248" y="204" font-size="15" fill="#16a34a" font-weight="bold">H</text>
+      </svg>
+      <div class="figcap">
+        <b>Nét liền:</b> các cạnh SA, SB, SC, AB, BC, CA (tất cả đều thấy).<br>
+        <b>Nét đứt:</b> AH (xanh lá) và SH (đỏ) — đây là các <i>đường phụ</i>.<br>
+        SA ⊥ (ABC), AH ⊥ BC (H ∈ BC) ⟹ SH ⊥ BC. Góc giữa (SBC) và (ABC) là φ = ∠SHA.
+      </div>
+    </div>
+    <p><b>Định lí ba đường vuông góc (dạng dùng nhiều nhất):</b> Cho SA ⊥ (ABC). Kẻ AH ⊥ BC tại H. Khi đó SH ⊥ BC.</p>
+    <div class="formula">
+      Góc giữa <b>(SBC)</b> và <b>(ABC)</b> = ∠<b>SHA</b> &nbsp;⟹&nbsp; tan φ = <b>SA / AH</b>
+    </div>
+    <div class="note">
+      ⚠️ Nhiều bạn nhầm lấy góc ∠SBA. Hãy nhớ: chân đường vuông góc phải hạ <b>xuống chính giao tuyến</b> BC, chứ không phải xuống một cạnh bên.
+    </div>
+  </div>
+
+  <!-- K4 -->
+  <div class="card" id="k4">
+    <h3><span class="tag">K4</span> Hình chóp đều – Góc giữa mặt bên và mặt đáy</h3>
+    <div class="figwrap">
+      <svg class="fig" viewBox="0 0 420 370" xmlns="http://www.w3.org/2000/svg">
+        <!-- Đáy ABCD: cạnh thấy nét liền, cạnh khuất nét đứt -->
+        <line x1="100" y1="250" x2="200" y2="300" stroke="#1e293b" stroke-width="2.4"/> <!-- AB -->
+        <line x1="200" y1="300" x2="310" y2="250" stroke="#1e293b" stroke-width="2.4"/> <!-- BC -->
+        <line x1="310" y1="250" x2="210" y2="200" stroke="#1e293b" stroke-width="2.4" stroke-dasharray="7 5"/> <!-- CD khuất -->
+        <line x1="210" y1="200" x2="100" y2="250" stroke="#1e293b" stroke-width="2.4" stroke-dasharray="7 5"/> <!-- DA khuất -->
+
+        <!-- Cạnh bên -->
+        <line x1="205" y1="70" x2="100" y2="250" stroke="#1e293b" stroke-width="2.4"/> <!-- SA -->
+        <line x1="205" y1="70" x2="200" y2="300" stroke="#1e293b" stroke-width="2.4"/> <!-- SB -->
+        <line x1="205" y1="70" x2="310" y2="250" stroke="#1e293b" stroke-width="2.4"/> <!-- SC -->
+        <line x1="205" y1="70" x2="210" y2="200" stroke="#1e293b" stroke-width="2.4" stroke-dasharray="7 5"/> <!-- SD khuất -->
+
+        <!-- SO (đường phụ) - nét đứt đỏ -->
+        <line x1="205" y1="70" x2="205" y2="250" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="7 5"/>
+        <!-- OM (đường phụ) - nét đứt xanh lá -->
+        <line x1="205" y1="250" x2="150" y2="275" stroke="#16a34a" stroke-width="2.6" stroke-dasharray="7 5"/>
+        <!-- SM (đường phụ) - nét đứt nâu -->
+        <line x1="205" y1="70" x2="150" y2="275" stroke="#b45309" stroke-width="2.6" stroke-dasharray="7 5"/>
+
+        <!-- Cung góc φ = ∠SMO -->
+        <path d="M 177.3 262.6 A 30 30 0 0 0 157.8 246" fill="none" stroke="#7c3aed" stroke-width="2.2"/>
+        <text x="168" y="258" font-size="14" fill="#7c3aed" font-weight="bold">φ</text>
+
+        <!-- Điểm -->
+        <circle cx="205" cy="70"  r="4.5" fill="#0f172a"/><text x="213" y="66"  font-size="15" font-weight="bold">S</text>
+        <circle cx="100" cy="250" r="4.5" fill="#0f172a"/><text x="84"  y="268" font-size="15" font-weight="bold">A</text>
+        <circle cx="200" cy="300" r="4.5" fill="#0f172a"/><text x="190" y="322" font-size="15" font-weight="bold">B</text>
+        <circle cx="310" cy="250" r="4.5" fill="#0f172a"/><text x="318" y="268" font-size="15" font-weight="bold">C</text>
+        <circle cx="210" cy="200" r="4.5" fill="#0f172a"/><text x="196" y="192" font-size="15" font-weight="bold">D</text>
+        <circle cx="205" cy="250" r="4.5" fill="#16a34a"/><text x="213" y="262" font-size="15" fill="#16a34a" font-weight="bold">O</text>
+        <circle cx="150" cy="275" r="4.5" fill="#b45309"/><text x="126" y="290" font-size="15" fill="#b45309" font-weight="bold">M</text>
+      </svg>
+      <div class="figcap">
+        <b>Nét liền:</b> SA, SB, SC, AB, BC (cạnh thấy).<br>
+        <b>Nét đứt:</b> SD, CD, DA (cạnh khuất); SO, OM, SM (đường phụ).<br>
+        Chóp đều S.ABCD, O là tâm đáy, M là trung điểm AB. OM ⊥ AB, SM ⊥ AB ⟹ góc giữa (SAB) và (ABCD) là ∠SMO.
+      </div>
+    </div>
+    <div class="formula">
+      Chóp đều: tan φ = <b>SO / OM</b>
+    </div>
+    <ul>
+      <li>Chóp <b>tam giác đều</b> cạnh đáy a: OM = (a√3)/6.</li>
+      <li>Chóp <b>tứ giác đều</b> cạnh đáy a: OM = a/2.</li>
+      <li>Nếu đề cho <b>cạnh bên</b>: tính SO = √(SA² − OA²) trước, rồi mới áp dụng công thức tan.</li>
+    </ul>
+  </div>
+
+  <!-- K5: MỞ RỘNG - TÍCH CÓ HƯỚNG + CASIO -->
+  <div class="card" id="k5">
+    <h3><span class="tag">K5</span> Phương pháp tọa độ — Tích có hướng &amp; kỹ thuật Casio</h3>
+
+    <h4>1. Công thức tính góc giữa hai mặt phẳng</h4>
+    <div class="formula">
+      cos α = <b>| n₁ · n₂ |</b> / ( |n₁| · |n₂| )
+    </div>
+    <p>Trong đó <b>n₁</b> = (A₁; B₁; C₁) là VTPT của (P), <b>n₂</b> = (A₂; B₂; C₂) là VTPT của (Q).</p>
+
+    <h4>2. Tích có hướng của hai vectơ — công cụ tìm VTPT</h4>
+    <p>Cho hai vectơ <b>u</b> = (u₁; u₂; u₃) và <b>v</b> = (v₁; v₂; v₃). <b>Tích có hướng</b> của <b>u</b> và <b>v</b>, kí hiệu [<b>u</b>, <b>v</b>], được xác định bởi:</p>
+    <div class="formula">
+      <b>n</b> = [<b>u</b>, <b>v</b>] = <span class="op">(</span> u₂v₃ − u₃v₂ <span class="op">;</span> u₃v₁ − u₁v₃ <span class="op">;</span> u₁v₂ − u₂v₁ <span class="op">)</span>
+    </div>
+    <div class="note violet">
+      <b>Ứng dụng để tìm VTPT:</b> Nếu mặt phẳng (P) có hai vectơ chỉ phương <b>u</b>, <b>v</b> <i>không cùng phương</i> (ví dụ <b>u</b> = <b>AB</b>, <b>v</b> = <b>AC</b> với A, B, C ∈ (P)), thì <b>n</b> = [<b>u</b>, <b>v</b>] là một VTPT của (P).
+    </div>
+
+    <h4>3. Ví dụ minh hoạ</h4>
+    <p>Cho mặt phẳng (P) đi qua A(1; 0; 0), B(0; 1; 0), C(0; 0; 1). Tìm VTPT của (P).</p>
+    <p><b>Giải:</b> Ta có <b>AB</b> = (−1; 1; 0), <b>AC</b> = (−1; 0; 1).</p>
+    <div class="formula">
+      <b>n</b> = [<b>AB</b>, <b>AC</b>] = ( 1·1 − 0·0 ; 0·(−1) − (−1)·1 ; (−1)·0 − 1·(−1) ) = <b>(1; 1; 1)</b>
+    </div>
+    <p>Vậy <b>n</b> = (1; 1; 1) là một VTPT của (P).</p>
+
+    <h4>4. Kỹ thuật Casio — thao tác từng bước</h4>
+
+    <div class="casio">
+      <h5>🖩 Casio fx-580VN X</h5>
+      <ol>
+        <li>Nhấn <kbd>MENU</kbd> → chọn <kbd>5</kbd> (Vector)</li>
+        <li>Chọn <kbd>1</kbd> (VctA) → <kbd>1</kbd> (Dim) → <kbd>1</kbd> (3D)</li>
+        <li>Nhập lần lượt các thành phần của <b>u</b>: u₁ <kbd>=</kbd> … <kbd>=</kbd> u₂ <kbd>=</kbd> … <kbd>=</kbd> u₃ <kbd>=</kbd> …</li>
+        <li>Nhấn <kbd>AC</kbd></li>
+        <li>Chọn <kbd>2</kbd> (VctB) → <kbd>1</kbd> (Dim) → <kbd>1</kbd> (3D) → nhập các thành phần của <b>v</b></li>
+        <li>Nhấn <kbd>AC</kbd></li>
+        <li>Nhấn <kbd>OPTN</kbd> → <kbd>3</kbd> (Vector) → <kbd>3</kbd> (VctA) → nhấn phím <kbd>×</kbd> → <kbd>OPTN</kbd> → <kbd>3</kbd> → <kbd>4</kbd> (VctB) → <kbd>=</kbd></li>
+        <li>Màn hình hiện <b>VctAns = (X; Y; Z)</b> — đó chính là <b>n</b> = [<b>u</b>, <b>v</b>].</li>
+      </ol>
+    </div>
+
+    <div class="casio">
+      <h5>🖩 Casio fx-880BTG (tương tự)</h5>
+      <ol>
+        <li>Nhấn <kbd>MENU</kbd> → chọn biểu tượng <b>Vector</b></li>
+        <li>Định nghĩa <b>VctA</b>: nhập 3 thành phần của <b>u</b></li>
+        <li>Định nghĩa <b>VctB</b>: nhập 3 thành phần của <b>v</b></li>
+        <li>Nhấn <kbd>VctA</kbd> <kbd>×</kbd> <kbd>VctB</kbd> → <kbd>=</kbd></li>
+        <li>Kết quả <b>VctAns = (X; Y; Z)</b> là tích có hướng [<b>u</b>, <b>v</b>].</li>
+      </ol>
+    </div>
+
+    <div class="note green">
+      ✅ Nếu kết quả là (0; 0; 0) → hai vectơ <b>u</b>, <b>v</b> cùng phương (chọn lại điểm).<br>
+      ✅ Có thể rút gọn vectơ (chia cho ước chung) để tính tay nhẹ nhàng hơn.<br>
+      ✅ Nếu đã biết phương trình mặt phẳng dạng Ax + By + Cz + D = 0 thì VTPT là <b>n</b> = (A; B; C) — không cần Casio.<br>
+      ✅ Nhớ lấy <b>giá trị tuyệt đối</b> của tích vô hướng để góc luôn nhọn.
+    </div>
+  </div>
+
+  <!-- K6 -->
+  <div class="card" id="k6">
+    <h3><span class="tag">K6</span> Lưu ý – Các sai sót thường gặp</h3>
+    <ul>
+      <li>❌ <b>Trả lời góc tù.</b> Nếu tính ra cos α &lt; 0 hoặc α &gt; 90°, phải lấy góc bù: α' = 180° − α.</li>
+      <li>❌ <b>Chọn sai chân đường vuông góc.</b> Đường vuông góc phải hạ xuống <b>giao tuyến</b> của hai mặt phẳng.</li>
+      <li>❌ <b>Không chứng minh vuông góc.</b> Phải chỉ rõ a ⊥ d và b ⊥ d trước khi kết luận góc.</li>
+      <li>❌ <b>Nhầm góc giữa đường thẳng và mặt phẳng với góc giữa hai mặt phẳng.</b></li>
+      <li>✅ Nếu chứng minh được một đường thẳng ⊥ (P) và đường đó nằm trong (Q) thì (P) ⊥ (Q), tức góc = 90° — cách làm nhanh nhất cho nhiều bài.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ========================= PHẦN 2: LUYỆN TẬP ========================= -->
+<section id="practice">
+  <h2 class="sec"><span class="num">2</span> Ba bộ bài tập áp dụng (có lời giải)</h2>
+  <p class="sec-desc">Chọn đáp án — hệ thống chấm ngay. Nếu làm sai, bạn sẽ được nhắc <b>ôn lại đúng thẻ kiến thức</b> liên quan.</p>
+  <div id="practiceList"></div>
+</section>
+
+<!-- ========================= PHẦN 3: ĐỀ THI ========================= -->
+<section id="exam">
+  <h2 class="sec"><span class="num">3</span> Ba đề luyện tập 22 câu (có bấm giờ)</h2>
+  <p class="sec-desc">Mỗi đề gồm 22 câu trắc nghiệm. Nhấn <b>Bắt đầu</b> để khởi động đồng hồ — hết giờ hệ thống tự thu bài.</p>
+  <div id="examList"></div>
+</section>
+
+</main>
+
+<footer>
+  Trang ôn tập tự học · Góc giữa hai mặt phẳng · Hoạt động offline, không cần Internet
+  <br>
+  <span class="author">👨‍🏫 Thiết kế web bởi thầy Nguyễn Hữu Trung – THPT Trần Phú – 0964848989</span>
+</footer>
+
+<script>
+/* ================= LÝ THUYẾT (tiêu đề để hiện nút "Ôn lại") ================= */
+const THEORY_TITLE = {
+  k1: 'Định nghĩa & tính chất góc giữa hai mặt phẳng',
+  k2: 'Quy trình 4 bước xác định góc',
+  k3: 'Định lí ba đường vuông góc (chóp có cạnh bên ⊥ đáy)',
+  k4: 'Hình chóp đều – mặt bên và mặt đáy',
+  k5: 'Phương pháp tọa độ + Casio',
+  k6: 'Lưu ý & sai sót thường gặp'
+};
+
+/* ================= BÀI TẬP CÓ LỜI GIẢI ================= */
+const PRACTICE = [
+  {
+    id:'p1',
+    title:'Bộ 1 — Nhận biết & Thông hiểu',
+    badge:'badge g', badgeText:'Cơ bản',
+    desc:'6 câu hỏi kiểm tra định nghĩa, tính chất và cách đọc hình.',
+    questions:[
+      {q:'Góc giữa hai mặt phẳng song song (hoặc trùng nhau) bằng:',
+       options:['0°','45°','90°','180°'], ans:0,
+       sol:'Hai mặt phẳng song song hoặc trùng nhau thì góc giữa chúng bằng 0°.', review:'k1'},
+      {q:'Cho hình chóp S.ABC có SA ⊥ (ABC). Kẻ AH ⊥ BC tại H. Góc giữa (SBC) và (ABC) là:',
+       options:['∠SBA','∠SHA','∠SAH','∠SCA'], ans:1,
+       sol:'SA ⊥ (ABC) ⇒ SA ⊥ BC. Lại có AH ⊥ BC ⇒ BC ⊥ (SAH) ⇒ BC ⊥ SH. Vậy góc phẳng nhị diện cạnh BC là ∠SHA.', review:'k3'},
+      {q:'Góc giữa hai mặt phẳng luôn nằm trong khoảng nào?',
+       options:['(0°; 180°)','[0°; 90°]','[0°; 180°]','(0°; 90°)'], ans:1,
+       sol:'Theo định nghĩa, góc giữa hai mặt phẳng là góc nhọn hoặc vuông nên 0° ≤ α ≤ 90°.', review:'k1'},
+      {q:'Cho hình chóp tứ giác đều S.ABCD, O là tâm đáy, M là trung điểm AB. Góc giữa (SAB) và (ABCD) là:',
+       options:['∠SMO','∠SOM','∠SBO','∠SOA'], ans:0,
+       sol:'OM ⊥ AB (O là tâm hình vuông, M trung điểm AB) và SM ⊥ AB (tam giác SAB cân tại S). Vậy góc cần tìm là ∠SMO.', review:'k4'},
+      {q:'Nếu (P) ⊥ (Q) thì góc giữa hai mặt phẳng đó bằng:',
+       options:['0°','45°','90°','180°'], ans:2,
+       sol:'Hai mặt phẳng vuông góc thì góc giữa chúng bằng 90°.', review:'k1'},
+      {q:'Trong không gian Oxyz, cho (P): x + 2y − 2z + 1 = 0 và (Q): 2x + y + 2z − 3 = 0. Cosin góc giữa (P) và (Q) bằng:',
+       options:['0','1/3','1/2','1'], ans:0,
+       sol:'n₁ = (1; 2; −2), n₂ = (2; 1; 2). Tích vô hướng: 1·2 + 2·1 + (−2)·2 = 2 + 2 − 4 = 0 ⇒ hai mặt phẳng vuông góc ⇒ cos = 0.', review:'k5'}
+    ]
+  },
+  {
+    id:'p2',
+    title:'Bộ 2 — Vận dụng',
+    badge:'badge o', badgeText:'Trung bình',
+    desc:'6 câu hỏi tính số đo góc trong các mô hình quen thuộc.',
+    questions:[
+      {q:'Cho hình chóp S.ABCD có đáy ABCD là hình vuông cạnh a, SA ⊥ (ABCD), SA = a. Góc giữa (SBC) và (ABCD) bằng:',
+       options:['30°','45°','60°','90°'], ans:1,
+       sol:'BC ⊥ AB và BC ⊥ SA ⇒ BC ⊥ SB. Góc cần tìm là ∠SBA. Tam giác SAB vuông cân tại A (SA = AB = a) nên ∠SBA = 45°.', review:'k3'},
+      {q:'Cho hình chóp tứ giác đều S.ABCD có cạnh đáy bằng a, SO = a√3/2 (O là tâm đáy). Góc giữa mặt bên và mặt đáy bằng:',
+       options:['30°','45°','60°','90°'], ans:2,
+       sol:'OM = a/2. tan φ = SO/OM = (a√3/2)/(a/2) = √3 ⇒ φ = 60°.', review:'k4'},
+      {q:'Cho hình chóp S.ABC có SA ⊥ (ABC), tam giác ABC vuông tại B, AB = BC = a, SA = a. Góc giữa (SBC) và (ABC) bằng:',
+       options:['30°','45°','60°','90°'], ans:1,
+       sol:'AB ⊥ BC và SA ⊥ BC ⇒ BC ⊥ (SAB) ⇒ BC ⊥ SB. Góc cần tìm là ∠SBA. tan∠SBA = SA/AB = 1 ⇒ 45°.', review:'k3'},
+      {q:'Góc giữa hai mặt phẳng (P): x + y − 1 = 0 và (Q): y + z − 2 = 0 bằng:',
+       options:['30°','45°','60°','90°'], ans:2,
+       sol:'n₁ = (1;1;0), n₂ = (0;1;1). n₁·n₂ = 1; |n₁| = |n₂| = √2. cos α = 1/2 ⇒ α = 60°.', review:'k5'},
+      {q:'Cho hình chóp S.ABCD có đáy ABCD là hình vuông cạnh a, SA ⊥ (ABCD), SA = a√2. Gọi φ là góc giữa (SBD) và (ABCD). Giá trị tan φ bằng:',
+       options:['1','√2','2','√3'], ans:2,
+       sol:'BD ⊥ AC, BD ⊥ SA ⇒ BD ⊥ (SAC) ⇒ BD ⊥ SO. Vậy góc cần tìm là ∠SOA. AO = a√2/2, tan φ = SA/AO = (a√2)/(a√2/2) = 2.', review:'k3'},
+      {q:'Cho tứ diện đều ABCD cạnh a. Góc α giữa (ABC) và (ABD) thoả mãn:',
+       options:['cos α = 1/3','cos α = 1/2','cos α = √3/2','cos α = 1/4'], ans:0,
+       sol:'Gọi M là trung điểm AB. CM ⊥ AB, DM ⊥ AB ⇒ góc cần tìm là ∠CMD. CM = DM = a√3/2, CD = a. cos∠CMD = (CM² + DM² − CD²)/(2·CM·DM) = (3a²/4 + 3a²/4 − a²)/(2·3a²/4) = 1/3.', review:'k2'}
+    ]
+  },
+  {
+    id:'p3',
+    title:'Bộ 3 — Vận dụng cao',
+    badge:'badge', badgeText:'Nâng cao',
+    desc:'6 câu hỏi tổng hợp, đòi hỏi kết hợp dựng hình và tính toán.',
+    questions:[
+      {q:'Cho hình lập phương ABCD.A′B′C′D′ cạnh a. Gọi α là góc giữa (A′BD) và (ABCD). Khẳng định nào đúng?',
+       options:['α = 45°','α = 60°','cos α = 1/3','cos α = 1/√3'], ans:3,
+       sol:'Đặt A(0;0;0), B(a;0;0), D(0;a;0), A′(0;0;a). Mặt phẳng (A′BD) có VTPT (1;1;1), (ABCD) có VTPT (0;0;1). cos α = 1/√3.', review:'k5'},
+      {q:'Cho hình chóp S.ABC có SA ⊥ (ABC), SA = a, tam giác ABC vuông cân tại A với AB = AC = a√2. Góc giữa (SBC) và (ABC) bằng:',
+       options:['30°','45°','60°','90°'], ans:1,
+       sol:'BC = 2a. Gọi M là trung điểm BC ⇒ AM ⊥ BC, AM = BC/2 = a. Lại có SM ⊥ BC. Góc cần tìm là ∠SMA. tan∠SMA = SA/AM = 1 ⇒ 45°.', review:'k3'},
+      {q:'Cho lăng trụ đứng ABC.A′B′C′ có đáy ABC là tam giác đều cạnh a, AA′ = a. Gọi φ là góc giữa (A′BC) và (ABC). Giá trị tan φ bằng:',
+       options:['2/√3','√3/2','2√3','√3'], ans:0,
+       sol:'M là trung điểm BC: AM ⊥ BC, AM = a√3/2; A′M ⊥ BC. Góc cần tìm là ∠A′MA. tan φ = AA′/AM = a/(a√3/2) = 2/√3.', review:'k3'},
+      {q:'Cho hai mặt phẳng (P): x + 2y − 2z + 1 = 0 và (Q): 2x − y + 2z − 3 = 0. Cosin góc giữa chúng bằng:',
+       options:['4/9','1/3','2/3','5/9'], ans:0,
+       sol:'n₁ = (1;2;−2), n₂ = (2;−1;2). n₁·n₂ = 2 − 2 − 4 = −4; |n₁| = |n₂| = 3. cos α = |−4|/9 = 4/9.', review:'k5'},
+      {q:'Cho hình chóp S.ABCD có đáy ABCD là hình vuông cạnh a, SA ⊥ (ABCD), SA = a. Góc giữa (SBC) và (SCD) bằng:',
+       options:['30°','45°','60°','90°'], ans:2,
+       sol:'Chọn A(0;0;0), B(a;0;0), C(a;a;0), D(0;a;0), S(0;0;a). (SBC) có VTPT (1;0;1); (SCD) có VTPT (0;1;1). cos α = |1|/(√2·√2) = 1/2 ⇒ α = 60°.', review:'k5'},
+      {q:'Cho hình chóp S.ABCD có đáy ABCD là hình vuông cạnh a, SA ⊥ (ABCD), SA = a√2. Gọi α là góc giữa (SBC) và (SCD). Khẳng định nào đúng?',
+       options:['α = 30°','α = 60°','cos α = 1/3','cos α = 1/2'], ans:2,
+       sol:'Với S(0;0;a√2): (SBC) có VTPT (a√2;0;a) ~ (√2;0;1); (SCD) có VTPT (0;a√2;a) ~ (0;√2;1). cos α = 1/(√3·√3) = 1/3.', review:'k5'}
+    ]
+  }
+];
+
+/* ================= 3 ĐỀ THI 22 CÂU ================= */
+const EXAMS = [
+  {
+    id:'e1',
+    title:'Đề 1 — Nhận biết & Thông hiểu',
+    meta:'22 câu · 30 phút',
+    time:30*60,
+    questions:[
+      {q:'Góc giữa hai mặt phẳng song song bằng:', o:['0°','90°','180°','45°'], a:0, s:'Hai mặt phẳng song song thì góc giữa chúng bằng 0°.'},
+      {q:'Nếu (P) ⊥ (Q) thì góc giữa chúng bằng:', o:['0°','45°','90°','180°'], a:2, s:'Định nghĩa hai mặt phẳng vuông góc: góc bằng 90°.'},
+      {q:'Góc α giữa hai mặt phẳng luôn thoả mãn:', o:['0° < α < 90°','0° ≤ α ≤ 90°','0° ≤ α ≤ 180°','0° < α < 180°'], a:1, s:'Góc giữa hai mặt phẳng là góc nhọn hoặc vuông.'},
+      {q:'Góc giữa hai mặt phẳng là góc giữa:', o:['hai đường thẳng bất kỳ nằm trong hai mặt phẳng','hai đường thẳng lần lượt vuông góc với hai mặt phẳng','hai đường thẳng song song với hai mặt phẳng','hai giao tuyến của hai mặt phẳng'], a:1, s:'Đây là định nghĩa chuẩn của góc giữa hai mặt phẳng.'},
+      {q:'Cho (P) // (Q) và (R) cắt cả hai. Góc giữa (R) và (P) so với góc giữa (R) và (Q) là:', o:['bằng nhau','gấp đôi','bù nhau','không so sánh được'], a:0, s:'Mặt phẳng (R) tạo với hai mặt phẳng song song những góc bằng nhau.'},
+      {q:'Cho hình chóp S.ABC có SA ⊥ (ABC), AH ⊥ BC tại H. Góc giữa (SBC) và (ABC) là:', o:['∠SBA','∠SHA','∠SAH','∠SBC'], a:1, s:'BC ⊥ (SAH) ⇒ BC ⊥ SH. Góc phẳng nhị diện là ∠SHA.'},
+      {q:'Cho hình chóp S.ABCD có SA ⊥ (ABCD), đáy ABCD là hình vuông. Góc giữa (SAB) và (ABCD) bằng:', o:['45°','60°','90°','0°'], a:2, s:'Trong (SAB) có SA ⊥ AB, trong (ABCD) có AD ⊥ AB. ∠(SA,AD) = 90° vì SA ⊥ (ABCD).'},
+      {q:'Cho hình chóp tứ giác đều S.ABCD, O là tâm đáy, M trung điểm AB. Góc giữa (SAB) và (ABCD) là:', o:['∠SMO','∠SOM','∠SBO','∠SAO'], a:0, s:'OM ⊥ AB và SM ⊥ AB nên góc cần tìm là ∠SMO.'},
+      {q:'Trong không gian Oxyz, góc giữa (Oxy) và (Oxz) bằng:', o:['0°','45°','60°','90°'], a:3, s:'VTPT của (Oxy) là (0;0;1), của (Oxz) là (0;1;0); tích vô hướng bằng 0 ⇒ 90°.'},
+      {q:'Góc giữa (P): x + y = 0 và (Q): y + z = 0 bằng:', o:['30°','45°','60°','90°'], a:2, s:'n₁=(1;1;0), n₂=(0;1;1); n₁·n₂ = 1; |n₁|=|n₂|=√2 ⇒ cos = 1/2 ⇒ 60°.'},
+      {q:'Cho (P) và (Q) cắt nhau theo giao tuyến d. Trong (P) kẻ a ⊥ d tại O, trong (Q) kẻ b ⊥ d tại O. Góc giữa (P) và (Q) là:', o:['góc giữa a và b (lấy nhọn hoặc vuông)','góc giữa a và d','góc giữa b và d','luôn bằng 90°'], a:0, s:'Đó chính là góc phẳng của nhị diện.'},
+      {q:'Cho hình lập phương ABCD.A′B′C′D′. Góc giữa (ABCD) và (ABB′A′) bằng:', o:['45°','60°','90°','0°'], a:2, s:'Hai mặt phẳng kề nhau của hình lập phương vuông góc với nhau.'},
+      {q:'Cho hình lập phương ABCD.A′B′C′D′. Góc giữa (ABCD) và (A′B′C′D′) bằng:', o:['0°','45°','90°','180°'], a:0, s:'Hai mặt phẳng song song nên góc bằng 0°.'},
+      {q:'Cho hình chóp S.ABC có SA ⊥ (ABC), tam giác ABC vuông tại B. Góc giữa (SBC) và (ABC) là:', o:['∠SCA','∠SBA','∠SAB','∠BSC'], a:1, s:'AB ⊥ BC và SA ⊥ BC ⇒ BC ⊥ SB; góc cần tìm là ∠SBA.'},
+      {q:'Cho tứ diện ABCD có AB, AC, AD đôi một vuông góc. Góc giữa (ABC) và (ABD) bằng:', o:['30°','45°','60°','90°'], a:3, s:'AD ⊥ AB, AD ⊥ AC ⇒ AD ⊥ (ABC). Mà AD ⊂ (ABD) ⇒ (ABD) ⊥ (ABC) ⇒ 90°.'},
+      {q:'Cho hình chóp S.ABCD đáy là hình vuông cạnh a, SA ⊥ (ABCD), SA = a. Góc giữa (SBC) và (ABCD) bằng:', o:['30°','45°','60°','90°'], a:1, s:'Góc là ∠SBA; tan = SA/AB = 1 ⇒ 45°.'},
+      {q:'Cho hình chóp S.ABCD đáy là hình vuông cạnh a, SA ⊥ (ABCD), SA = a. Góc giữa (SCD) và (ABCD) bằng:', o:['45°','30°','60°','90°'], a:0, s:'Góc là ∠SDA; tan = SA/AD = 1 ⇒ 45°.'},
+      {q:'Cho hình chóp S.ABC có SA ⊥ (ABC), SA = a, tam giác ABC đều cạnh a, H là trung điểm BC. Gọi φ = góc giữa (SBC) và (ABC). Khẳng định đúng:', o:['tan φ = 2/√3','tan φ = √3/2','tan φ = 2√3','tan φ = √3'], a:0, s:'AH = a√3/2; tan φ = SA/AH = a/(a√3/2) = 2/√3.'},
+      {q:'Cho hình chóp tứ giác đều S.ABCD, O là tâm đáy. Khẳng định nào đúng?', o:['SO ⊥ (ABCD)','SA ⊥ (ABCD)','SB ⊥ (ABCD)','SC ⊥ (ABCD)'], a:0, s:'Trong hình chóp đều, đường cao SO vuông góc với mặt đáy.'},
+      {q:'Cho hai mặt phẳng (P), (Q) có VTPT lần lượt là n₁=(1;0;1), n₂=(1;1;0). Góc giữa (P) và (Q) bằng:', o:['30°','45°','60°','90°'], a:2, s:'n₁·n₂ = 1; |n₁|=|n₂|=√2 ⇒ cos = 1/2 ⇒ 60°.'},
+      {q:'Cho hình chóp S.ABCD đáy là hình chữ nhật, SA ⊥ (ABCD). Góc giữa (SBC) và (ABCD) là:', o:['∠SBA','∠SAB','∠SCA','∠SDA'], a:0, s:'AB ⊥ BC và SA ⊥ BC ⇒ BC ⊥ SB; góc cần tìm là ∠SBA.'},
+      {q:'Cho (P) ⊥ (Q) và đường thẳng a ⊥ (P). Khi đó:', o:['a // (Q) hoặc a ⊂ (Q)','a ⊥ (Q)','a luôn cắt (Q)','a ⊂ (Q)'], a:0, s:'a ⊥ (P) và (P) ⊥ (Q) ⇒ a song song hoặc nằm trong (Q).'},
+      {q:'Cho hình chóp S.ABCD đáy là hình vuông, SA ⊥ (ABCD). Góc giữa (SAB) và (SAD) bằng:', o:['45°','60°','90°','30°'], a:2, s:'Giao tuyến là SA. Trong (SAB): AB ⊥ SA; trong (SAD): AD ⊥ SA. Góc = ∠BAD = 90°.'}
+    ]
+  },
+  {
+    id:'e2',
+    title:'Đề 2 — Vận dụng',
+    meta:'22 câu · 30 phút',
+    time:30*60,
+    questions:[
+      {q:'Cho hình chóp S.ABCD đáy là hình vuông cạnh a, SA ⊥ (ABCD), SA = a√3. Góc giữa (SBC) và (ABCD) bằng:', o:['30°','45°','60°','90°'], a:2, s:'Góc là ∠SBA; tan = SA/AB = √3 ⇒ 60°.'},
+      {q:'Cho hình chóp tứ giác đều S.ABCD cạnh đáy a, SO = a/2. Góc giữa mặt bên và mặt đáy bằng:', o:['30°','45°','60°','90°'], a:1, s:'tan φ = SO/OM = (a/2)/(a/2) = 1 ⇒ 45°.'},
+      {q:'Cho hình chóp S.ABC có SA ⊥ (ABC), ABC đều cạnh a, SA = a√3/2. Góc giữa (SBC) và (ABC) bằng:', o:['30°','45°','60°','90°'], a:1, s:'AH = a√3/2; tan φ = SA/AH = 1 ⇒ 45°.'},
+      {q:'Cho hình chóp S.ABCD có đáy là hình vuông, SA ⊥ (ABCD). Góc giữa (SAC) và (ABCD) bằng:', o:['45°','60°','90°','30°'], a:2, s:'SA ⊂ (SAC) và SA ⊥ (ABCD) ⇒ (SAC) ⊥ (ABCD) ⇒ 90°.'},
+      {q:'Cho hình lập phương ABCD.A′B′C′D′ cạnh a. Góc giữa (A′BD) và (ABCD) bằng:', o:['45°','60°','arccos(1/3)','arccos(1/√3)'], a:3, s:'VTPT của (A′BD) là (1;1;1), của (ABCD) là (0;0;1); cos = 1/√3.'},
+      {q:'Cho (P): 2x − y + 2z − 3 = 0 và (Q): x + 2y − 2z + 1 = 0. Cosin góc giữa chúng bằng:', o:['4/9','1/3','2/3','5/9'], a:0, s:'n₁·n₂ = −4; |n₁| = |n₂| = 3 ⇒ cos = 4/9.'},
+      {q:'Cho tứ diện đều ABCD cạnh a. Góc giữa (ABC) và (ABD) bằng:', o:['60°','arccos(1/3)','45°','90°'], a:1, s:'Gọi M trung điểm AB: CM = DM = a√3/2, CD = a ⇒ cos∠CMD = 1/3.'},
+      {q:'Cho hình chóp S.ABCD đáy là hình vuông cạnh a, SA ⊥ (ABCD), SA = a√2. tan góc giữa (SBD) và (ABCD) bằng:', o:['1','√2','2','√3'], a:2, s:'BD ⊥ (SAC) ⇒ góc là ∠SOA; tan = SA/AO = (a√2)/(a√2/2) = 2.'},
+      {q:'Cho hình chóp S.ABC có SA ⊥ (ABC), SA = 3a/2, ABC vuông tại A với AB = a, AC = a√3. Góc giữa (SBC) và (ABC) bằng:', o:['30°','45°','60°','90°'], a:2, s:'BC = 2a; AH = AB·AC/BC = a√3/2; tan = SA/AH = √3 ⇒ 60°.'},
+      {q:'Cho lăng trụ đứng ABC.A′B′C′ đáy đều cạnh a, AA′ = a√3/2. Góc giữa (A′BC) và (ABC) bằng:', o:['30°','45°','60°','90°'], a:1, s:'AM = a√3/2; tan = AA′/AM = 1 ⇒ 45°.'},
+      {q:'Góc giữa (P): x + 2y − 2z + 5 = 0 và (Q): 2x + y + 2z − 1 = 0 bằng:', o:['30°','45°','60°','90°'], a:3, s:'n₁·n₂ = 2 + 2 − 4 = 0 ⇒ vuông góc ⇒ 90°.'},
+      {q:'Cho hình chóp S.ABCD có SA ⊥ (ABCD). Khẳng định nào đúng?', o:['(SAC) ⊥ (ABCD)','(SBC) ⊥ (ABCD)','(SCD) ⊥ (ABCD)','(SBD) ⊥ (ABCD)'], a:0, s:'SA ⊂ (SAC) và SA ⊥ (ABCD) nên (SAC) ⊥ (ABCD).'},
+      {q:'Cho hình lập phương ABCD.A′B′C′D′. Góc giữa (ACC′A′) và (ABCD) bằng:', o:['45°','60°','90°','30°'], a:2, s:'AA′ ⊥ (ABCD) và AA′ ⊂ (ACC′A′) ⇒ 90°.'},
+      {q:'Cho hình chóp S.ABC có SA ⊥ (ABC), tam giác ABC vuông cân tại B. Góc giữa (SBC) và (ABC) là:', o:['∠SBA','∠SCA','∠SAB','∠SCB'], a:0, s:'AB ⊥ BC và SA ⊥ BC ⇒ BC ⊥ SB; góc cần tìm là ∠SBA.'},
+      {q:'Nếu góc giữa hai mặt phẳng bằng 90° thì:', o:['(P) // (Q)','(P) ⊥ (Q)','(P) ≡ (Q)','(P) cắt (Q) nhưng không vuông góc'], a:1, s:'Đó là định nghĩa hai mặt phẳng vuông góc.'},
+      {q:'Trong Oxyz, góc giữa (P): x + y + z − 3 = 0 và (Oxy) bằng:', o:['45°','arccos(1/√3)','60°','90°'], a:1, s:'n_P = (1;1;1), n_Oxy = (0;0;1); cos = 1/√3.'},
+      {q:'Cho tứ diện ABCD có AB ⊥ (BCD) và BCD là tam giác đều. Kẻ BH ⊥ CD. Góc giữa (ACD) và (BCD) là:', o:['∠AHB','∠ABH','∠BAH','∠BCD'], a:0, s:'BH ⊥ CD, AH ⊥ CD (định lí ba đường vuông góc) ⇒ góc cần tìm là ∠AHB.'},
+      {q:'Cho hình chóp tam giác đều S.ABC cạnh đáy a, cạnh bên a. tan góc giữa mặt bên và mặt đáy bằng:', o:['√2','2√2','√3','2√3'], a:1, s:'OM = a√3/6; SO = √(a² − a²/3) = a√6/3; tan = SO/OM = 2√2.'},
+      {q:'Cho hình chóp S.ABCD đáy hình vuông, SA ⊥ (ABCD). Gọi α là góc giữa (SBC) và (ABCD). Khẳng định đúng:', o:['tan α = SA/AB','tan α = SA/AC','tan α = SA/AD','tan α = SA/SB'], a:0, s:'Góc là ∠SBA trong tam giác SAB vuông tại A ⇒ tan α = SA/AB.'},
+      {q:'Góc giữa (P): x − y + 2z − 1 = 0 và (Q): 2x + y + z + 3 = 0 bằng:', o:['30°','45°','60°','90°'], a:2, s:'n₁=(1;−1;2), n₂=(2;1;1); n₁·n₂ = 3; |n₁|=|n₂|=√6 ⇒ cos = 1/2 ⇒ 60°.'},
+      {q:'Cho hình chóp S.ABC có SA ⊥ (ABC), SA = a, ABC đều cạnh 2a. Góc giữa (SBC) và (ABC) bằng:', o:['30°','45°','60°','90°'], a:0, s:'AH = a√3; tan = SA/AH = 1/√3 ⇒ 30°.'},
+      {q:'Cho hình hộp chữ nhật ABCD.A′B′C′D′. Góc giữa (ABCD) và (ADD′A′) bằng:', o:['0°','45°','90°','180°'], a:2, s:'Hai mặt phẳng kề của hình hộp chữ nhật vuông góc nhau.'}
+    ]
+  },
+  {
+    id:'e3',
+    title:'Đề 3 — Nâng cao',
+    meta:'22 câu · 35 phút',
+    time:35*60,
+    questions:[
+      {q:'Cho tứ diện đều ABCD cạnh a. Góc giữa (ABC) và (ABD) bằng:', o:['arccos(1/3)','60°','45°','arccos(1/2)'], a:0, s:'M trung điểm AB: CM = DM = a√3/2, CD = a ⇒ cos = 1/3.'},
+      {q:'Cho hình lập phương cạnh a. Góc giữa (A′BD) và (ABCD) bằng:', o:['45°','arccos(1/√3)','60°','arccos(1/3)'], a:1, s:'VTPT (1;1;1) và (0;0;1) ⇒ cos = 1/√3.'},
+      {q:'Cho hình chóp S.ABCD đáy vuông cạnh a, SA ⊥ (ABCD), SA = a√6/2. Góc giữa (SBD) và (ABCD) bằng:', o:['30°','45°','60°','90°'], a:2, s:'tan = SA/AO = (a√6/2)/(a√2/2) = √3 ⇒ 60°.'},
+      {q:'Cho hình chóp S.ABC có SA ⊥ (ABC), SA = a, AB = AC = a√2, ∠BAC = 90°. Góc giữa (SBC) và (ABC) bằng:', o:['30°','45°','60°','90°'], a:1, s:'BC = 2a; AM = a; tan = SA/AM = 1 ⇒ 45°.'},
+      {q:'Cho lăng trụ đứng ABC.A′B′C′ đáy đều cạnh a, AA′ = a. tan góc giữa (A′BC) và (ABC) bằng:', o:['2/√3','√3/2','2√3','√3'], a:0, s:'AM = a√3/2; tan = a/(a√3/2) = 2/√3.'},
+      {q:'Cho (P): x + 2y − 2z + 1 = 0 và (Q): 2x − y + 2z − 3 = 0. Cosin góc giữa chúng bằng:', o:['4/9','1/3','2/3','1/9'], a:0, s:'n₁·n₂ = −4; |n₁| = |n₂| = 3 ⇒ cos = 4/9.'},
+      {q:'Cho hình chóp S.ABCD đáy là hình thoi cạnh a, ∠BAD = 60°, SA ⊥ (ABCD), SA = a. tan góc giữa (SBD) và (ABCD) bằng:', o:['2/√3','√3/2','2√3','√3'], a:0, s:'ABD đều cạnh a ⇒ AO = a√3/2; BD ⊥ (SAO) ⇒ góc là ∠SOA; tan = SA/AO = 2/√3.'},
+      {q:'Cho hình chóp S.ABCD đáy vuông cạnh a, mặt bên SAB là tam giác đều và (SAB) ⊥ (ABCD). tan góc giữa (SCD) và (ABCD) bằng:', o:['√3/2','2/√3','√3','1/2'], a:0, s:'SH ⊥ (ABCD), SH = a√3/2; HK = a; tan = SH/HK = √3/2.'},
+      {q:'Cho tứ diện OABC có OA, OB, OC đôi một vuông góc và OA = OB = OC = a. Góc giữa (ABC) và (OBC) bằng:', o:['arccos(1/√3)','45°','60°','90°'], a:0, s:'(ABC): x+y+z = a có VTPT (1;1;1); (OBC): x = 0 có VTPT (1;0;0) ⇒ cos = 1/√3.'},
+      {q:'Cho hình chóp S.ABCD đáy vuông cạnh a, SA ⊥ (ABCD), SA = a. Góc giữa (SBC) và (SCD) bằng:', o:['30°','45°','60°','90°'], a:2, s:'VTPT lần lượt (1;0;1) và (0;1;1) ⇒ cos = 1/2 ⇒ 60°.'},
+      {q:'Cho hình chóp S.ABCD đáy vuông cạnh a, SA ⊥ (ABCD), SA = a√2. Góc giữa (SBC) và (SCD) thoả mãn:', o:['cos α = 1/2','cos α = 1/3','α = 45°','α = 60°'], a:1, s:'VTPT (√2;0;1) và (0;√2;1) ⇒ cos = 1/3.'},
+      {q:'Góc giữa (P): x + y + 2z − 1 = 0 và (Q): 2x − y + z + 3 = 0 bằng:', o:['30°','45°','60°','90°'], a:2, s:'n₁·n₂ = 3; |n₁| = |n₂| = √6 ⇒ cos = 1/2 ⇒ 60°.'},
+      {q:'Cho lăng trụ đứng ABC.A′B′C′ có ABC vuông cân tại A, AB = AC = a, AA′ = a√2. tan góc giữa (A′BC) và (ABC) bằng:', o:['1','√2','2','√3'], a:2, s:'AM = a√2/2; tan = AA′/AM = (a√2)/(a√2/2) = 2.'},
+      {q:'Cho hình chóp S.ABC có SA ⊥ (ABC), SA = AB = a, tam giác ABC vuông cân tại A. Gọi φ là góc giữa (SBC) và (ABC). Khẳng định đúng:', o:['tan φ = √2','tan φ = 1','tan φ = 2','tan φ = √3'], a:0, s:'BC = a√2, AM = a√2/2; tan φ = SA/AM = √2.'},
+      {q:'Hai mặt phẳng có cùng vectơ pháp tuyến thì góc giữa chúng bằng:', o:['0°','45°','90°','180°'], a:0, s:'Cùng VTPT ⇒ song song hoặc trùng ⇒ góc 0°.'},
+      {q:'Cho hình lập phương ABCD.A′B′C′D′. Góc giữa (A′BC) và (ABCD) bằng:', o:['30°','45°','60°','90°'], a:1, s:'VTPT (1;0;1) và (0;0;1) ⇒ cos = 1/√2 ⇒ 45°.'},
+      {q:'Cho hình chóp tứ giác đều S.ABCD cạnh đáy a, SO = a√3/2. Góc giữa mặt bên và mặt đáy bằng:', o:['30°','45°','60°','90°'], a:2, s:'tan = SO/OM = (a√3/2)/(a/2) = √3 ⇒ 60°.'},
+      {q:'Cho hình chóp S.ABCD đáy vuông cạnh a, SA ⊥ (ABCD), SA = a. Góc giữa (SAB) và (SCD) bằng:', o:['30°','45°','60°','90°'], a:1, s:'(SAB): y = 0 có VTPT (0;1;0); (SCD) có VTPT (0;1;1) ⇒ cos = 1/√2 ⇒ 45°.'},
+      {q:'Cho hình chóp S.ABCD đáy vuông cạnh a, SA ⊥ (ABCD), SA = a. Góc giữa (SAD) và (SBC) bằng:', o:['30°','45°','60°','90°'], a:1, s:'(SAD): x = 0 có VTPT (1;0;0); (SBC) có VTPT (1;0;1) ⇒ cos = 1/√2 ⇒ 45°.'},
+      {q:'Cho hình chóp S.ABCD đáy vuông cạnh a, SA ⊥ (ABCD), SA = a. Góc giữa (SAB) và (SBC) bằng:', o:['30°','45°','60°','90°'], a:3, s:'VTPT (0;1;0) và (1;0;1) có tích vô hướng 0 ⇒ 90°.'},
+      {q:'Cho hình chóp tam giác đều S.ABC cạnh đáy a, cạnh bên a. tan góc giữa mặt bên và mặt đáy bằng:', o:['√2','2√2','√3','2√3'], a:1, s:'OM = a√3/6; SO = a√6/3; tan = 2√2.'},
+      {q:'Cho hai mặt phẳng cắt nhau, góc giữa chúng bằng 60°. Góc giữa hai đường thẳng lần lượt vuông góc với hai mặt phẳng đó bằng:', o:['30°','60°','120°','90°'], a:1, s:'Theo định nghĩa, góc giữa hai mặt phẳng bằng góc giữa hai đường thẳng vuông góc với chúng.'}
+    ]
+  }
+];
+
+/* ================= RENDER: LUYỆN TẬP ================= */
+const LETTERS = ['A','B','C','D'];
+
+function highlightCard(id){
+  setTimeout(()=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.classList.remove('flash');
+    void el.offsetWidth;
+    el.classList.add('flash');
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+  }, 60);
+}
+
+function buildPracticeQuestion(q, idx){
+  const card = document.createElement('div');
+  card.className = 'qcard';
+
+  const head = document.createElement('div');
+  head.className = 'qhead';
+  head.innerHTML = `<span class="qnum">Câu ${idx+1}</span><span class="qtext">${q.q}</span>`;
+  card.appendChild(head);
+
+  const opts = document.createElement('div');
+  opts.className = 'opts';
+
+  q.options.forEach((text, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = `<span class="lab">${LETTERS[i]}</span><span>${text}</span>`;
+    btn.addEventListener('click', ()=>{
+      if(card.dataset.done) return;
+      card.dataset.done = '1';
+      const ok = (i === q.ans);
+      [...opts.children].forEach((c, j)=>{
+        c.disabled = true;
+        if(j === q.ans) c.classList.add('correct');
+        if(j === i && !ok) c.classList.add('wrong');
+      });
+      const fb = document.createElement('div');
+      fb.className = 'fb ' + (ok ? 'fb-ok' : 'fb-err');
+      if(ok){
+        fb.innerHTML = `<strong>✔ Chính xác!</strong><div class="sol"><b>Lời giải:</b> ${q.sol}</div>`;
+      }else{
+        fb.innerHTML =
+          `<strong>✘ Chưa đúng.</strong> Đáp án đúng là <b>${LETTERS[q.ans]}. ${q.options[q.ans]}</b>.` +
+          `<div class="sol"><b>Lời giải:</b> ${q.sol}</div>` +
+          `<a class="review-btn" href="#${q.review}" data-target="${q.review}">📖 Ôn lại: ${THEORY_TITLE[q.review]}</a>`;
+      }
+      card.appendChild(fb);
+      const link = fb.querySelector('.review-btn');
+      if(link){
+        link.addEventListener('click', (e)=>{
+          e.preventDefault();
+          highlightCard(q.review);
+        });
+      }
+    });
+    opts.appendChild(btn);
+  });
+
+  card.appendChild(opts);
+  return card;
+}
+
+function renderPractice(){
+  const wrap = document.getElementById('practiceList');
+  PRACTICE.forEach(set=>{
+    const box = document.createElement('div');
+    box.className = 'set';
+    box.innerHTML =
+      `<h3>${set.title} <span class="badge ${set.badge}">${set.badgeText}</span></h3>
+       <p class="sub">${set.desc}</p>`;
+    set.questions.forEach((q, i)=> box.appendChild(buildPracticeQuestion(q, i)));
+    wrap.appendChild(box);
+  });
+}
+
+/* ================= RENDER: ĐỀ THI ================= */
+const examState = {};
+
+function fmtTime(s){
+  const m = Math.floor(s/60), ss = s % 60;
+  return String(m).padStart(2,'0') + ':' + String(ss).padStart(2,'0');
+}
+
+function renderExamShell(exam){
+  const wrap = document.getElementById('examList');
+  const box = document.createElement('div');
+  box.className = 'exam';
+  box.id = 'exam-' + exam.id;
+  box.innerHTML =
+    `<div class="exam-head">
+       <div>
+         <h3>${exam.title}</h3>
+         <div class="meta">${exam.meta}</div>
+       </div>
+       <div style="display:flex;gap:10px;align-items:center">
+         <div class="timer" style="display:none">00:00</div>
+         <button class="btn btn-pri start-btn">▶ Bắt đầu</button>
+       </div>
+     </div>
+     <div class="exam-body"></div>`;
+  wrap.appendChild(box);
+  box.querySelector('.start-btn').addEventListener('click', ()=> startExam(exam.id));
+}
+
+function startExam(examId){
+  const exam = EXAMS.find(e=>e.id === examId);
+  const box  = document.getElementById('exam-' + examId);
+  const body = box.querySelector('.exam-body');
+  const timerEl = box.querySelector('.timer');
+  const startBtn = box.querySelector('.start-btn');
+
+  const st = examState[examId] = {
+    answers: new Array(exam.questions.length).fill(-1),
+    submitted: false,
+    timeLeft: exam.time,
+    timer: null
+  };
+
+  startBtn.style.display = 'none';
+  timerEl.style.display = 'block';
+  timerEl.textContent = fmtTime(st.timeLeft);
+  timerEl.classList.remove('danger');
+
+  body.classList.add('on');
+  body.innerHTML = '';
+
+  exam.questions.forEach((q, i)=>{
+    const eq = document.createElement('div');
+    eq.className = 'eq';
+    eq.dataset.i = i;
+    eq.innerHTML = `<div class="qtext"><span class="qnum" style="margin-right:8px">Câu ${i+1}</span>${q.q}</div>`;
+    const opts = document.createElement('div');
+    opts.className = 'opts';
+    q.o.forEach((text, j)=>{
+      const b = document.createElement('button');
+      b.className = 'opt';
+      b.dataset.j = j;
+      b.innerHTML = `<span class="lab">${LETTERS[j]}</span><span>${text}</span>`;
+      b.addEventListener('click', ()=>{
+        if(st.submitted) return;
+        st.answers[i] = j;
+        [...opts.children].forEach(c=> c.classList.remove('sel'));
+        b.classList.add('sel');
+      });
+      opts.appendChild(b);
+    });
+    eq.appendChild(opts);
+    body.appendChild(eq);
+  });
+
+  const actions = document.createElement('div');
+  actions.className = 'exam-actions';
+  actions.innerHTML = `<button class="btn btn-ok submit-btn">✔ Nộp bài</button>`;
+  body.appendChild(actions);
+  actions.querySelector('.submit-btn').addEventListener('click', ()=> submitExam(examId));
+
+  st.timer = setInterval(()=>{
+    if(st.submitted) return;
+    st.timeLeft--;
+    timerEl.textContent = fmtTime(Math.max(0, st.timeLeft));
+    if(st.timeLeft <= 300) timerEl.classList.add('danger');
+    if(st.timeLeft <= 0){
+      clearInterval(st.timer);
+      submitExam(examId);
+    }
+  }, 1000);
+}
+
+function submitExam(examId){
+  const exam = EXAMS.find(e=>e.id === examId);
+  const st = examState[examId];
+  if(!st || st.submitted) return;
+  st.submitted = true;
+  if(st.timer) clearInterval(st.timer);
+
+  const box = document.getElementById('exam-' + examId);
+  const body = box.querySelector('.exam-body');
+  const timerEl = box.querySelector('.timer');
+  timerEl.classList.remove('danger');
+
+  let correct = 0;
+  exam.questions.forEach((q, i)=>{
+    const eq = body.querySelector(`.eq[data-i="${i}"]`);
+    const opts = eq.querySelectorAll('.opt');
+    const chosen = st.answers[i];
+    opts.forEach(o=>{
+      o.disabled = true;
+      o.classList.remove('sel');
+      const j = Number(o.dataset.j);
+      if(j === q.a) o.classList.add('hit');
+      if(j === chosen && chosen !== q.a) o.classList.add('miss');
+    });
+    if(chosen === q.a) correct++;
+    const sol = document.createElement('div');
+    sol.className = 'sol';
+    sol.innerHTML = `<b>Đáp án: ${LETTERS[q.a]}.</b> ${q.s}`
+      + (chosen === -1 ? ' <i style="color:#dc2626">(Bạn chưa chọn đáp án)</i>' : '');
+    eq.appendChild(sol);
+  });
+
+  const score = (correct/exam.questions.length*10).toFixed(1);
+  let msg;
+  if(correct >= 20) msg = '🏆 Xuất sắc! Bạn đã nắm rất chắc chủ đề này.';
+  else if(correct >= 16) msg = '👍 Khá tốt! Hãy xem lại vài câu sai để hoàn thiện.';
+  else if(correct >= 11) msg = '🙂 Trung bình. Nên ôn lại mục "Quy trình 4 bước" và "Hình chóp đều".';
+  else msg = '💪 Cần cố gắng thêm. Hãy quay lại phần Lý thuyết và Bộ bài tập có lời giải trước nhé!';
+
+  const res = document.createElement('div');
+  res.className = 'result';
+  res.innerHTML =
+    `<div class="score">${correct}/${exam.questions.length} câu đúng — ${score}/10 điểm</div>
+     <div class="msg">${msg}</div>
+     <div class="exam-actions">
+       <button class="btn btn-ghost retry-btn">🔄 Làm lại đề này</button>
+       <a class="btn btn-pri" href="#theory" style="text-decoration:none;display:inline-block">📘 Ôn lại lý thuyết</a>
+     </div>`;
+  body.appendChild(res);
+
+  res.querySelector('.retry-btn').addEventListener('click', ()=>{
+    st.submitted = true;
+    if(st.timer) clearInterval(st.timer);
+    body.classList.remove('on');
+    body.innerHTML = '';
+    const startBtn = box.querySelector('.start-btn');
+    startBtn.style.display = '';
+    startBtn.textContent = '▶ Bắt đầu lại';
+    timerEl.style.display = 'none';
+    timerEl.textContent = '00:00';
+    delete examState[examId];
+  });
+
+  res.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+/* ================= KHỞI TẠO ================= */
+renderPractice();
+EXAMS.forEach(renderExamShell);
+
+/* Nav active */
+const navLinks = document.querySelectorAll('nav a');
+const sections = [...navLinks].map(a=> document.querySelector(a.getAttribute('href')));
+window.addEventListener('scroll', ()=>{
+  let idx = 0;
+  sections.forEach((s, i)=>{ if(s && s.getBoundingClientRect().top < 140) idx = i; });
+  navLinks.forEach((a, i)=> a.classList.toggle('active', i === idx));
+}, {passive:true});
+</script>
+</body>
+</html>
